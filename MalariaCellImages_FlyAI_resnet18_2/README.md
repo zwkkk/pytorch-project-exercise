@@ -35,31 +35,30 @@ batch_size:512<br>
 评分：84.31<br>
 
 ```python
-#调整学习率策略
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=10, verbose=True,
+#调整学习率策略 factor=0.85, patience=20 要搭配好，factor太小容易一下子就使lr降到很小值
+
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.85, patience=20, verbose=True,
                                                        threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
 ```
-epoch:1000<br>
+epoch:500<br>
 batch_size:512<br>
-评分：<br>版本32
+评分：<br>版本37
 
-epoch:1000<br>
+epoch:500<br>
 batch_size:128<br>
-评分：<br>版本33
+评分：<br>版本38
 
-epoch:1000<br>
+epoch:500<br>
 batch_size:256<br>
-评分：<br>版本33
+评分：<br>版本39
 
-epoch:512<br>
+epoch:500<br>
 batch_size:1000<br>
-评分：<br>版本34
+评分：<br>版本40
 
-epoch:512<br>
-batch_size:1000<br>
-评分：<br>版本35
+
 
 将在测试集的损失作为保存模型的标准，原来为准确率<br>
-epoch:1000<br>
+epoch:500<br>
 batch_size:512<br>
-评分：<br>版本36
+评分：<br>版本41
