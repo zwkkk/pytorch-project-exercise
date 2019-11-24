@@ -95,29 +95,25 @@ epoch:2000<br>
 batch_size:256<br>
 评分：<br>版本44
 
-13.
-epoch:2000<br>
-batch_size:256<br>
-评分：<br>版本45
 
 参考第8次训练过程，针对patience进行处理<br>
 ```python
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=800, verbose=True,
                                                        threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
 ```                                           
-14.
+13.
 epoch:4000<br>
 batch_size:256<br>
-评分：<br>版本46
+评分：<br>版本45
 
 ```python
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=800, verbose=True,
                                                        threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
 ```
-15.
+14.
 epoch:8000<br>
 batch_size:256<br>
-评分：<br>版本47
+评分：<br>版本46
 
 将在测试集的损失作为保存模型的标准，原来为准确率<br>
 epoch:500<br>
