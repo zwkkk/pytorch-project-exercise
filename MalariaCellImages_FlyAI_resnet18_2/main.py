@@ -29,7 +29,6 @@ else:
 # device = 'cpu'
 device = torch.device(device)
 
-
 def eval(model, x_test, y_test):
     cnn.eval()
     batch_eval = model.batch_iter(x_test, y_test)
@@ -46,10 +45,22 @@ def eval(model, x_test, y_test):
 
 
 cnn = resnet18().to(device)
+
+
+#实验改动位置
+#################################################################################
 '''
 针对optimizer进行实验
 '''
 optimizer = Adam(cnn.parameters(), lr=3e-4)  # 选用AdamOptimizer
+
+
+#学习率优化若800轮训练loss未下降，则学习率*0.1
+
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 800, gamma=0.1, last_epoch=-1)
+
+#################################################################################
+
 loss_fn = nn.CrossEntropyLoss()  # 定义损失函数
 
 # 训练并评估模型
@@ -61,7 +72,7 @@ best_accuracy = 0
 for i in range(args.EPOCHS):
     cnn.train()
     x_train, y_train, x_test, y_test = data.next_batch(args.BATCH)  # 读取数据
-    
+
     x_train = torch.from_numpy(x_train)
     y_train = torch.from_numpy(y_train)
     x_train = x_train.float().to(device)
@@ -79,11 +90,12 @@ for i in range(args.EPOCHS):
     # print(x_train.shape,outputs.shape,y_train.shape)
     loss = loss_fn(outputs, y_train)
     loss.backward()
-    optimizer.step()
+    optimizer.step()   #优化器针对loss进行参数更新
+    scheduler.step()    #scheduler为针对学习率的调整策略
     print(loss.detach())
     # 若测试准确率高于当前最高准确率，则保存模型
     train_accuracy = eval(model, x_test, y_test)
-    if train_accuracy > best_accuracy:
+    if train_accuracy >= best_accuracy:
         best_accuracy = train_accuracy
         model.save_model(cnn, MODEL_PATH, overwrite=True)
         print("step %d, best accuracy %g" % (i, best_accuracy))
