@@ -1,5 +1,6 @@
 # 对优化器进行调参:<br>
 
+---
 optimizer = Adam(cnn.parameters(), lr=0.001, betas=(0.9, 0.999))  # 选用AdamOptimizer. <br>
 
 1. 
@@ -58,6 +59,7 @@ tensor(0.0051, device='cuda:0')<br>
 998/1000<br>
 tensor(0.0167, device='cuda:0')<br>
 
+---
 ```python
 #调整学习率策略 factor=0.85, patience=20 要搭配好，factor太小容易一下子就使lr降到很小值
 
@@ -72,49 +74,41 @@ train_loss: 0.6935; test_accuracy: 0.71875; lr: 7.1410e-06=0.017 <br>
 分析：训练损失还很大，因此为欠拟合，要增大训练轮数；factor=0.85, patience=20，factor可能设置过大，导致后期lr降不下来; 模型保存逻辑为测试集accuracy不再增加，则保存模型，那么当测试集acc=1时，就不再保存模型了，之后我们将保存逻辑调整为当测试集accuracy大于等于之前最好，就保存模型，使训练集进一步拟合。<br>
 
 
-```python
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.6, patience=50, verbose=True,
-                                                       threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
-```
-10.
-epoch:1000<br>
-batch_size:512<br>
-评分：<br>版本42
-
-11.
-epoch:2000<br>
-batch_size:256<br>
-评分：<br>版本43
-
-```python
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.6, patience=100, verbose=True,
-                                                       threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
-```
-12.
-epoch:2000<br>
-batch_size:256<br>
-评分：<br>版本44
-
-
+---
 参考第8次训练过程，针对patience进行处理<br>
 ```python
 scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=800, verbose=True,
                                                        threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
 ```                                           
-13.
+10.
 epoch:4000<br>
 batch_size:256<br>
-评分：<br>版本45
+评分：85.13<br>
 
+这个版本patience=800太大，学习率基本没变化<br>
+
+
+---
+按照ReduceLROnPlateau调整机制，patience最好设置的比上面稍为小一点。我们参考第8次训练loss损失，采用等距降低学习率策略<br>
 ```python
-scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=800, verbose=True,
-                                                       threshold=0.0001, threshold_mode='rel', cooldown=0, min_lr=0, eps=1e-10)
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 800, gamma=0.1, last_epoch=-1)
 ```
-14.
-epoch:8000<br>
-batch_size:256<br>
-评分：<br>版本46
+10.
+epoch:3200<br>
+batch_size:1000<br>
+评分：84.99<br>
 
+500/3200<br>
+tensor(0.0002, device='cuda:0')<br>
+
+1000/3200<br>
+tensor(7.8809e-05, device='cuda:0')<br>
+
+batch size选择过大，导致其严重过拟合<br>
+
+
+
+---
 将在测试集的损失作为保存模型的标准，原来为准确率<br>
 epoch:500<br>
 batch_size:512<br>
