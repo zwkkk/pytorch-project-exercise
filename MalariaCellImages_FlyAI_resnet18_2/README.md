@@ -70,8 +70,8 @@ scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', fa
 epoch:500<br>
 batch_size:512<br>
 评分：49.6<br>
-train_loss: 0.6935; test_accuracy: 0.71875; lr: 7.1410e-06=0.017 <br>
-分析：训练损失还很大，因此为欠拟合，要增大训练轮数；factor=0.85, patience=20，factor可能设置过大，导致后期lr降不下来; 模型保存逻辑为测试集accuracy不再增加，则保存模型，那么当测试集acc=1时，就不再保存模型了，之后我们将保存逻辑调整为当测试集accuracy大于等于之前最好，就保存模型，使训练集进一步拟合。<br>
+train_loss: 0.6935; test_accuracy: 0.71875; lr: 7.1410e-06 <br>
+分析：训练损失还很大，因此为欠拟合，lr降得太小了，参数更新幅度太小; 模型保存逻辑为测试集accuracy不再增加，则保存模型，那么当测试集acc=1时，就不再保存模型了，之后我们将保存逻辑调整为当测试集accuracy大于等于之前最好，就保存模型，使训练集进一步拟合。<br>
 
 
 ---
