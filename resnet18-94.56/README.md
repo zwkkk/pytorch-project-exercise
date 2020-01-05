@@ -35,3 +35,8 @@ Epoch：2200<br>
 Batch size:256<br>
 评分：94.56<br>
 <img src='https://github.com/zwkkk/pytorch-project-exercise/blob/master/PIC/resnet18-94.56.png'/>
+
+
+Epoch：2000<br>
+Batch size:32<br>
+评分：94.94<br>
